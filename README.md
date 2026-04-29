@@ -1,8 +1,8 @@
 # 常温牛奶电商数据挖掘与可视化分析
 
-> 项目状态：活跃维护。该项目不是 LTS 项目，后续会继续补充截图、数据导入说明、部署说明和分析模型说明。
+> 项目状态：活跃维护，非 LTS。维护重点为功能迭代、数据链路完善、截图文档、部署说明和分析模型说明。
 
-本项目是一个基于 Django 的常温牛奶电商数据分析系统，围绕商品、品牌、价格段、产品属性、评论情感和用户行为做统计分析与可视化展示。项目使用 SQLite 默认数据库，适合作为课程设计、毕业设计、数据分析看板和二次开发案例。
+本项目是一个基于 Django 的常温牛奶电商数据分析系统，围绕商品、品牌、价格段、产品属性、评论情感和用户行为进行统计分析与可视化展示。项目默认使用 SQLite，适合作为课程设计、毕业设计、数据分析看板和二次开发案例。
 
 项目流程：
 
@@ -26,15 +26,41 @@
 | --- | --- |
 | 后端 | Python 3.12, Django 4.2 |
 | 后台 | django-simpleui, Django Admin |
-| 数据库 | SQLite，后续可替换 MySQL |
+| 数据库 | SQLite |
 | 数据分析 | pandas, numpy, scikit-learn |
 | 评论处理 | jieba, snownlp |
 | 爬虫解析 | requests, beautifulsoup4, scrapy |
 | 可视化 | ECharts, Bootstrap |
 
-## 演示图表
+## 功能模块
 
-以下 SVG 图表根据当前演示数据库生成，用于 README 预览。后续可以把真实页面截图继续放到 `docs/images/`。
+| 模块 | 说明 |
+| --- | --- |
+| 数据管理 | 商品、属性、评论、用户行为的后台维护 |
+| 数据采集 | 本地演示 HTML 采集、模拟数据生成、原始数据落盘 |
+| 市场分析 | 销售额、销量、价格段、平台与品牌集中度分析 |
+| 品牌价格 | 品牌销量排名、销售额对比、价格段竞争格局 |
+| 属性偏好 | 产品功能属性分布与属性共现关系 |
+| 评论情感 | 情感极性、评分分布、主题关注统计 |
+| 用户画像 | 基于消费金额、订单数、品牌数的用户聚类 |
+
+## 项目截图
+
+### 市场总体态势概览
+
+![市场总体态势概览](docs/images/市场总体态势概览.png)
+
+### 品牌与价格竞争格局分析
+
+![品牌与价格竞争格局分析](docs/images/品牌与价格竞争格局分析.png)
+
+### 用户画像分群
+
+![用户画像分群](docs/images/用户画像分群.png)
+
+## 数据图表
+
+以下 SVG 图表由当前演示数据库生成，用于展示核心统计结果。
 
 ### 品牌销售额 Top8
 
@@ -85,13 +111,13 @@ pip install -r requirements.txt
 python manage.py migrate
 ```
 
-项目当前保留本地演示数据库，重新维护时也可以用命令生成数据：
+生成演示数据：
 
 ```bash
 python manage.py load_mock_data --clear
 ```
 
-也可以使用本地演示采集页生成少量可追溯数据：
+从本地演示采集页生成少量可追溯数据：
 
 ```bash
 python manage.py crawl_demo_data --clear
@@ -115,7 +141,7 @@ http://127.0.0.1:8000/
 http://127.0.0.1:8000/admin/
 ```
 
-如果没有后台管理员账号，可以执行：
+创建后台管理员账号：
 
 ```bash
 python manage.py createsuperuser
@@ -147,25 +173,12 @@ Milk_Analysis/
 └── requirements.txt
 ```
 
-## 开发与维护
+## 文档
 
-该项目处于活跃维护状态，后续建议优先补充：
-
-- 前台核心页面截图
-- 后台数据管理截图
-- MySQL 配置示例
-- 数据采集字段说明
-- API 接口说明
-- 部署说明
-- 更完整的情感分析和聚类评估说明
-
-维护计划见：[docs/MAINTENANCE.md](docs/MAINTENANCE.md)
-
-截图补充建议见：[docs/SCREENSHOTS.md](docs/SCREENSHOTS.md)
-
-常见问题见：[docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
-
-原始项目说明见：[docs/project-overview.md](docs/project-overview.md)
+- 维护计划：[docs/MAINTENANCE.md](docs/MAINTENANCE.md)
+- 截图清单：[docs/SCREENSHOTS.md](docs/SCREENSHOTS.md)
+- 常见问题：[docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
+- 原始项目说明：[docs/project-overview.md](docs/project-overview.md)
 
 ## 总入口
 
