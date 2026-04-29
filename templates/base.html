@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}常温牛奶电商数据挖掘与可视化分析{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --nav-bg: #0f172a;
+            --nav-hover: rgba(255,255,255,.1);
+            --card-shadow: 0 4px 12px rgba(0,0,0,.06);
+            --card-radius: 14px;
+            --accent: #0ea5e9;
+            --chart-palette: #0ea5e9,#10b981,#8b5cf6,#f59e0b,#ec4899,#6366f1,#14b8a6,#f97316;
+        }
+        body { min-height: 100vh; background: linear-gradient(160deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%); font-family: 'Noto Sans SC', -apple-system, sans-serif; }
+        .chart-container { width: 100%; height: 380px; }
+        .chart-container-lg { width: 100%; height: 420px; }
+        .chart-container-sm { width: 100%; height: 320px; }
+        .navbar-dash { background: var(--nav-bg) !important; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+        .navbar-dash .navbar-brand { font-weight: 700; letter-spacing: -.02em; }
+        .navbar-dash .nav-link { color: rgba(255,255,255,.92); padding: .55rem .9rem; border-radius: 8px; font-weight: 500; }
+        .navbar-dash .nav-link:hover { color: #fff; background: var(--nav-hover); }
+        .navbar-dash .nav-link.active { color: #fff; background: var(--accent); }
+        .navbar-dash .btn-outline-light { border-radius: 8px; font-weight: 500; }
+        .card { border: none; border-radius: var(--card-radius); box-shadow: var(--card-shadow); overflow: hidden; background: #fff; }
+        .card-header { font-weight: 600; background: #fff; border-bottom: 1px solid #f1f5f9; padding: 1rem 1.35rem; font-size: 1.02rem; color: #0f172a; }
+        .card-body { padding: 1.35rem; }
+        .page-title { font-weight: 700; color: #0f172a; margin-bottom: .3rem; font-size: 1.5rem; }
+        .page-subtitle { color: #64748b; font-size: .95rem; margin-bottom: 1.5rem; }
+        .stat-card { border-radius: var(--card-radius); box-shadow: var(--card-shadow); transition: transform .15s ease, box-shadow .2s ease; }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+        .stat-card .card-body { padding: 1.35rem; }
+        .stat-card h3 { font-weight: 700; color: #0f172a; margin-bottom: 0; }
+        .stat-card .text-muted { font-size: .875rem; }
+        .section-desc { color: #64748b; font-size: .9rem; max-width: 720px; }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-dash">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand text-white" href="/">常温牛奶 · 数据挖掘与可视化</a>
+            <button class="navbar-toggler border-light" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-label="菜单">
+                <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navMain">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link nav-dash-link" href="/" data-path="/"><i class="bi bi-house me-1"></i>首页</a></li>
+                    <li class="nav-item"><a class="nav-link nav-dash-link" href="/market/" data-path="/market/"><i class="bi bi-graph-up me-1"></i>市场概览</a></li>
+                    <li class="nav-item"><a class="nav-link nav-dash-link" href="/brand-price/" data-path="/brand-price/"><i class="bi bi-bar-chart me-1"></i>品牌与价格</a></li>
+                    <li class="nav-item"><a class="nav-link nav-dash-link" href="/attribute/" data-path="/attribute/"><i class="bi bi-tags me-1"></i>属性偏好</a></li>
+                    <li class="nav-item"><a class="nav-link nav-dash-link" href="/review/" data-path="/review/"><i class="bi bi-chat-quote me-1"></i>评论情感</a></li>
+                    <li class="nav-item"><a class="nav-link nav-dash-link" href="/user/" data-path="/user/"><i class="bi bi-people me-1"></i>用户分群</a></li>
+                </ul>
+                <a class="btn btn-outline-light btn-sm" href="/admin/">后台管理</a>
+            </div>
+        </div>
+    </nav>
+    <main class="py-4">
+        <div class="container-fluid px-4">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'visualization/vendor/echarts.min.js' %}"></script>
+    <script src="{% static 'visualization/dashboard.js' %}"></script>
+    <script>
+      document.querySelectorAll('.nav-dash-link').forEach(function(a) {
+        if (location.pathname === a.getAttribute('data-path') || (a.getAttribute('data-path') === '/' && location.pathname === '/')) a.classList.add('active');
+      });
+      window.CHART_COLORS = ['#0ea5e9','#10b981','#8b5cf6','#f59e0b','#ec4899','#6366f1','#14b8a6','#f97316'];
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

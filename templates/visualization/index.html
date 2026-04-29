@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}常温牛奶电商数据挖掘与可视化分析{% endblock %}
+{% block content %}
+<h2 class="page-title mb-1">仪表盘</h2>
+<p class="page-subtitle">数据采集 → 消费特征分析 → 可视化展示。点击下方模块进入对应分析页面。</p>
+<div class="row g-4 mt-2">
+  <div class="col-md-6 col-lg-4">
+    <a href="/market/" class="text-decoration-none text-dark">
+      <div class="card h-100 stat-card">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="flex-shrink-0 bg-primary bg-opacity-10 rounded-3 p-3">
+              <i class="bi bi-graph-up-arrow text-primary fs-4"></i>
+            </div>
+            <div class="ms-3">
+              <h5 class="card-title mb-1">市场总体态势概览</h5>
+              <p class="text-muted small mb-0">销售额、销量、CRn、价格段分布</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="col-md-6 col-lg-4">
+    <a href="/brand-price/" class="text-decoration-none text-dark">
+      <div class="card h-100 stat-card">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="flex-shrink-0 bg-success bg-opacity-10 rounded-3 p-3">
+              <i class="bi bi-bar-chart-line text-success fs-4"></i>
+            </div>
+            <div class="ms-3">
+              <h5 class="card-title mb-1">品牌与价格段竞争格局</h5>
+              <p class="text-muted small mb-0">品牌梯队、主流价格区间</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="col-md-6 col-lg-4">
+    <a href="/attribute/" class="text-decoration-none text-dark">
+      <div class="card h-100 stat-card">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="flex-shrink-0 bg-info bg-opacity-10 rounded-3 p-3">
+              <i class="bi bi-tags text-info fs-4"></i>
+            </div>
+            <div class="ms-3">
+              <h5 class="card-title mb-1">产品功能属性偏好</h5>
+              <p class="text-muted small mb-0">有机、高钙、A2β 等关联规则</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="col-md-6 col-lg-4">
+    <a href="/review/" class="text-decoration-none text-dark">
+      <div class="card h-100 stat-card">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="flex-shrink-0 bg-warning bg-opacity-10 rounded-3 p-3">
+              <i class="bi bi-chat-quote text-warning fs-4"></i>
+            </div>
+            <div class="ms-3">
+              <h5 class="card-title mb-1">评论情感洞察</h5>
+              <p class="text-muted small mb-0">情感极性、主题提取</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="col-md-6 col-lg-4">
+    <a href="/user/" class="text-decoration-none text-dark">
+      <div class="card h-100 stat-card">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="flex-shrink-0 bg-secondary bg-opacity-10 rounded-3 p-3">
+              <i class="bi bi-people text-secondary fs-4"></i>
+            </div>
+            <div class="ms-3">
+              <h5 class="card-title mb-1">用户分群 / 用户画像</h5>
+              <p class="text-muted small mb-0">K-Means 聚类、消费群体</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="col-md-6 col-lg-4">
+    <a href="/admin/" class="text-decoration-none text-dark">
+      <div class="card h-100 stat-card">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="flex-shrink-0 bg-dark bg-opacity-10 rounded-3 p-3">
+              <i class="bi bi-gear text-dark fs-4"></i>
+            </div>
+            <div class="ms-3">
+              <h5 class="card-title mb-1">后台管理</h5>
+              <p class="text-muted small mb-0">django-simpleui 数据管理</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+{% endblock %}

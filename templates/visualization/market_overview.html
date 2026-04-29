@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block title %}市场总体态势概览{% endblock %}
+{% block content %}
+<h2 class="page-title mb-1">市场总体态势概览</h2>
+<p class="page-subtitle">销售额、销量、品牌集中度 CRn、价格段与平台分布</p>
+<div id="loadError" class="alert alert-warning d-none" role="alert">
+  数据加载失败：请先确认接口 <code>/api/market/overview/</code> 能在浏览器中打开，且数据库已导入数据（可运行 <code>python manage.py load_mock_data</code> 或 <code>python manage.py crawl_demo_data</code>）。
+</div>
+<div class="row mb-4">
+  <div class="col-md-4 mb-3">
+    <div class="card stat-card">
+      <div class="card-body">
+        <h6 class="text-muted mb-1">总销售额</h6>
+        <h3 class="mb-0" id="totalSales">—</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-3">
+    <div class="card stat-card">
+      <div class="card-body">
+        <h6 class="text-muted mb-1">总销量</h6>
+        <h3 class="mb-0" id="totalVolume">—</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-3">
+    <div class="card stat-card">
+      <div class="card-body">
+        <h6 class="text-muted mb-1">商品数</h6>
+        <h3 class="mb-0" id="productCount">—</h3>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-lg-6 mb-4">
+    <div class="card">
+      <div class="card-header">品牌集中度 CRn（累计销售额占比 %）</div>
+      <div class="card-body">
+        <div id="chartCrn" class="chart-container-lg"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6 mb-4">
+    <div class="card">
+      <div class="card-header">价格段分布（商品数）</div>
+      <div class="card-body">
+        <div id="chartPrice" class="chart-container-lg"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6 mb-4">
+    <div class="card">
+      <div class="card-header">平台销售额占比</div>
+      <div class="card-body">
+        <div id="chartPlatform" class="chart-container"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6 mb-4">
+    <div class="card">
+      <div class="card-header">品牌销售额 vs 销量（Top10）</div>
+      <div class="card-body">
+        <div id="chartBrandDual" class="chart-container"></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+(function() {
+  var colors = window.CHART_COLORS || ['#0ea5e9','#10b981','#8b5cf6'];
+  Dash.fetchJson('/api/market/overview/').then(function(res) {
+    var d = res.data || {};
+    document.getElementById('totalSales').textContent = Dash.formatRmb(d.total_sales);
+    document.getElementById('totalVolume').textContent = Dash.formatCompactNumber(d.total_volume);
+    document.getElementById('productCount').textContent = d.product_count != null ? d.product_count : '—';
+
+    var crn = d.crn || [];
+    if (crn.length) {
+      var ch = Dash.initChart('chartCrn');
+      ch.setOption({
+        color: colors,
+        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: function(params) {
+          var i = params[0].dataIndex; var x = crn[i];
+          return x.brand + '<br/>累计占比: ' + x.share + '%<br/>销售额: ' + Dash.formatRmb(x.sales || 0);
+        }},
+        grid: Dash.baseGrid(),
+        xAxis: { type: 'category', data: crn.map(function(x) { return x.brand; }), axisLabel: { rotate: 28, fontSize: 11 } },
+        yAxis: { type: 'value', name: '累计占比(%)', axisLabel: { formatter: '{value}%' }, max: 100, splitLine: Dash.baseSplitLine() },
+        series: [{ name: '累计占比', type: 'bar', data: crn.map(function(x) { return x.share; }), barWidth: '52%',
+          itemStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: '#0ea5e9' }, { offset: 1, color: '#06b6d4' }] } },
+          emphasis: { itemStyle: { color: '#0284c7' } }
+        }]
+      });
+    }
+
+    var priceDist = d.price_distribution || [];
+    if (priceDist.length) {
+      var ch2 = Dash.initChart('chartPrice');
+      ch2.setOption({
+        color: colors,
+        tooltip: { trigger: 'item', formatter: '{b}: {c} 件 ({d}%)' },
+        legend: { orient: 'vertical', right: '8%', top: 'center' },
+        series: [{ type: 'pie', radius: ['42%', '72%'], center: ['40%', '50%'], roseType: 'area',
+          data: priceDist.map(function(x) { return { name: x.segment, value: x.count }; }),
+          label: { formatter: '{b}\n{c}' }, labelLine: { length: 12, length2: 8 }
+        }]
+      });
+    }
+
+    var platformDist = d.platform_distribution || [];
+    if (platformDist.length) {
+      var ch3 = Dash.initChart('chartPlatform');
+      ch3.setOption({
+        color: colors,
+        tooltip: { trigger: 'item', formatter: function(p) { return p.name + ': 销售额 ' + Dash.formatRmb(p.value) + ' (' + p.percent + '%)'; } },
+        series: [{ type: 'pie', radius: '58%', center: ['50%', '50%'],
+          data: platformDist.map(function(x) { return { name: x.name, value: Math.round(x.sales || 0) }; }),
+          label: { formatter: '{b}: {d}%' }, emphasis: { itemStyle: { shadowBlur: 12, shadowOffsetX: 0 } }
+        }]
+      });
+    }
+
+    if (crn.length) {
+      var ch4 = Dash.initChart('chartBrandDual');
+      ch4.setOption({
+        color: [colors[0], colors[1]],
+        tooltip: { trigger: 'axis' },
+        legend: { data: ['销售额(万)', '销量'], top: 0 },
+        grid: Dash.baseGrid(),
+        xAxis: { type: 'category', data: crn.slice(0,10).map(function(x) { return x.brand; }), axisLabel: { rotate: 25 } },
+        yAxis: [{ type: 'value', name: '销售额(万)', axisLabel: { formatter: function(v) { return (v/1e4).toFixed(0); } } }, { type: 'value', name: '销量' }],
+        series: [
+          { name: '销售额(万)', type: 'bar', data: crn.slice(0,10).map(function(x) { return (x.sales||0)/1e4; }), barWidth: '28%' },
+          { name: '销量', type: 'line', yAxisIndex: 1, data: crn.slice(0,10).map(function(x) { return x.volume||0; }), symbol: 'circle', symbolSize: 8 }
+        ]
+      });
+    }
+    Dash.resizeAll();
+  }).catch(function() {
+    var el = document.getElementById('loadError');
+    if (el) el.classList.remove('d-none');
+    document.getElementById('totalSales').textContent = '加载失败';
+  });
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="420" viewBox="0 0 760 420" role="img" aria-label="品牌销售额 Top8">
+  <rect width="100%" height="100%" fill="#ffffff"/>
+  <text x="28" y="42" font-family="Noto Sans SC, Microsoft YaHei, Arial, sans-serif" font-size="22" font-weight="700" fill="#0f172a">品牌销售额 Top8</text>
+  <text x="28" y="96" font-family="Noto Sans SC, Microsoft YaHei, Arial, sans-serif" font-size="14" fill="#334155">完达山</text>
+  <rect x="160" y="78" width="468" height="24" rx="6" fill="#e2e8f0"/>
+  <rect x="160" y="78" width="468" height="24" rx="6" fill="#0ea5e9"/>
+  <text x="644" y="96" font-family="Arial, sans-serif" font-size="14" fill="#0f172a">9.8万</text>
+  <text x="28" y="136" font-family="Noto Sans SC, Microsoft YaHei, Arial, sans-serif" font-size="14" fill="#334155">欧德堡</text>
+  <rect x="160" y="118" width="468" height="24" rx="6" fill="#e2e8f0"/>
+  <rect x="160" y="118" width="454" height="24" rx="6" fill="#10b981"/>
+  <text x="644" y="136" font-family="Arial, sans-serif" font-size="14" fill="#0f172a">9.5万</text>
+  <text x="28" y="176" font-family="Noto Sans SC, Microsoft YaHei, Arial, sans-serif" font-size="14" fill="#334155">麦趣尔</text>
+  <rect x="160" y="158" width="468" height="24" rx="6" fill="#e2e8f0"/>
+  <rect x="160" y="158" width="449" height="24" rx="6" fill="#8b5cf6"/>
+  <text x="644" y="176" font-family="Arial, sans-serif" font-size="14" fill="#0f172a">9.4万</text>
+  <text x="28" y="216" font-family="Noto Sans SC, Microsoft YaHei, Arial, sans-serif" font-size="14" fill="#334155">现代牧业</text>
+  <rect x="160" y="198" width="468" height="24" rx="6" fill="#e2e8f0"/>
+  <rect x="160" y="198" width="444" height="24" rx="6" fill="#f59e0b"/>
+  <text x="644" y="216" font-family="Arial, sans-serif" font-size="14" fill="#0f172a">9.3万</text>
+  <text x="28" y="256" font-family="Noto Sans SC, Microsoft YaHei, Arial, sans-serif" font-size="14" fill="#334155">认养一头牛</text>
+  <rect x="160" y="238" width="468" height="24" rx="6" fill="#e2e8f0"/>
+  <rect x="160" y="238" width="432" height="24" rx="6" fill="#ec4899"/>
+  <text x="644" y="256" font-family="Arial, sans-serif" font-size="14" fill="#0f172a">9.1万</text>
+  <text x="28" y="296" font-family="Noto Sans SC, Microsoft YaHei, Arial, sans-serif" font-size="14" fill="#334155">纽仕兰</text>
+  <rect x="160" y="278" width="468" height="24" rx="6" fill="#e2e8f0"/>
+  <rect x="160" y="278" width="399" height="24" rx="6" fill="#6366f1"/>
+  <text x="644" y="296" font-family="Arial, sans-serif" font-size="14" fill="#0f172a">8.4万</text>
+  <text x="28" y="336" font-family="Noto Sans SC, Microsoft YaHei, Arial, sans-serif" font-size="14" fill="#334155">伊利</text>
+  <rect x="160" y="318" width="468" height="24" rx="6" fill="#e2e8f0"/>
+  <rect x="160" y="318" width="379" height="24" rx="6" fill="#14b8a6"/>
+  <text x="644" y="336" font-family="Arial, sans-serif" font-size="14" fill="#0f172a">8.0万</text>
+  <text x="28" y="376" font-family="Noto Sans SC, Microsoft YaHei, Arial, sans-serif" font-size="14" fill="#334155">天润</text>
+  <rect x="160" y="358" width="468" height="24" rx="6" fill="#e2e8f0"/>
+  <rect x="160" y="358" width="369" height="24" rx="6" fill="#f97316"/>
+  <text x="644" y="376" font-family="Arial, sans-serif" font-size="14" fill="#0f172a">7.7万</text>
+</svg>

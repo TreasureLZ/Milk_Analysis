@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block title %}用户分群 / 用户画像{% endblock %}
+{% block content %}
+<h2 class="page-title mb-1">用户分群 / 用户画像</h2>
+<p class="page-subtitle">K-Means 聚类：高端品质型、实用性价比型、新潮尝鲜型等</p>
+<div id="loadError" class="alert alert-warning d-none" role="alert">
+  数据加载失败：请先确认接口 <code>/api/user/clusters/</code> 能在浏览器中打开。若页面提示数据量不足，请先运行 <code>python manage.py load_mock_data</code> 生成用户行为数据后刷新。
+</div>
+<div class="row mb-4">
+  <div class="col-md-4 mb-3">
+    <div class="card stat-card">
+      <div class="card-body">
+        <h6 class="text-muted mb-1">用户数</h6>
+        <h3 class="mb-0" id="userCount">—</h3>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-lg-6 mb-4">
+    <div class="card">
+      <div class="card-header">群体画像（平均消费金额 vs 平均订单数）</div>
+      <div class="card-body">
+        <div id="chartProfiles" class="chart-container-lg"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6 mb-4">
+    <div class="card">
+      <div class="card-header">各群体人数占比</div>
+      <div class="card-body">
+        <div id="chartClusterPie" class="chart-container-lg"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6 mb-4">
+    <div class="card">
+      <div class="card-header">群体雷达图（金额 / 订单数 / 人数 归一化）</div>
+      <div class="card-body">
+        <div id="chartRadar" class="chart-container"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6 mb-4">
+    <div class="card">
+      <div class="card-header">群体平均消费金额对比</div>
+      <div class="card-body">
+        <div id="chartClusterBar" class="chart-container"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">分群说明</div>
+      <div class="card-body">
+        <p class="mb-0 text-muted small">基于用户消费金额、购买次数、品牌多样性等特征进行 K-Means 聚类。数据量不足时可能无分群结果，请在后台录入用户行为数据后刷新。</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+(function() {
+  var colors = window.CHART_COLORS || [];
+  Dash.fetchJson('/api/user/clusters/').then(function(res) {
+    var d = res.data || {};
+    document.getElementById('userCount').textContent = d.user_count != null ? d.user_count.toLocaleString() : '—';
+
+    var profiles = d.cluster_profiles || [];
+    if (profiles.length) {
+      var ch = Dash.initChart('chartProfiles');
+      ch.setOption({
+        color: colors,
+        tooltip: { trigger: 'axis' },
+        legend: { data: ['平均消费金额', '平均订单数'], top: 0 },
+        grid: { left: '12%', right: '10%', top: '18%', bottom: '14%' },
+        xAxis: { type: 'category', data: profiles.map(function(p) { return p.label || ('群体' + p.cluster); }) },
+        yAxis: [{ type: 'value', name: '金额' }, { type: 'value', name: '订单数' }],
+        series: [
+          { name: '平均消费金额', type: 'bar', data: profiles.map(function(p) { return Math.round(p.avg_amount * 100) / 100; }), barWidth: '32%' },
+          { name: '平均订单数', type: 'line', yAxisIndex: 1, data: profiles.map(function(p) { return Math.round(p.avg_count * 100) / 100; }), symbol: 'circle', symbolSize: 10 }
+        ]
+      });
+    }
+    if (profiles.length) {
+      var ch2 = Dash.initChart('chartClusterPie');
+      ch2.setOption({
+        color: colors,
+        tooltip: { trigger: 'item', formatter: '{b}: {c} 人 ({d}%)' },
+        series: [{ type: 'pie', radius: ['40%', '72%'], roseType: 'area',
+          data: profiles.map(function(p) { return { name: p.label || ('群体' + p.cluster), value: p.count }; }),
+          label: { formatter: '{b}\n{c}人' }
+        }]
+      });
+    }
+    if (profiles.length >= 2) {
+      var maxAmt = Math.max.apply(null, profiles.map(function(p) { return p.avg_amount; })) || 1;
+      var maxCnt = Math.max.apply(null, profiles.map(function(p) { return p.avg_count; })) || 1;
+      var maxNum = Math.max.apply(null, profiles.map(function(p) { return p.count; })) || 1;
+      var radarData = profiles.map(function(p, i) {
+        return {
+          value: [
+            Math.round((p.avg_amount / maxAmt) * 100) / 100,
+            Math.round((p.avg_count / maxCnt) * 100) / 100,
+            Math.round((p.count / maxNum) * 100) / 100
+          ],
+          name: p.label || ('群体' + p.cluster)
+        };
+      });
+      var ch3 = Dash.initChart('chartRadar');
+      ch3.setOption({
+        color: colors,
+        tooltip: { trigger: 'item' },
+        legend: { data: profiles.map(function(p) { return p.label || ('群体' + p.cluster); }), bottom: 0 },
+        radar: {
+          indicator: [
+            { name: '消费金额(归一)', max: 1 },
+            { name: '订单数(归一)', max: 1 },
+            { name: '人数(归一)', max: 1 }
+          ],
+          radius: '62%'
+        },
+        series: [{ type: 'radar', data: radarData, areaStyle: { opacity: 0.3 } }]
+      });
+    }
+    if (profiles.length) {
+      var ch4 = Dash.initChart('chartClusterBar');
+      ch4.setOption({
+        color: colors,
+        tooltip: { trigger: 'axis', formatter: function(params) { var i = params[0].dataIndex; var p = profiles[i]; return (p.label||'') + '<br/>平均金额: ¥' + (p.avg_amount||0).toFixed(2) + '<br/>人数: ' + p.count; }},
+        grid: { left: '14%', right: '10%', top: '10%', bottom: '14%' },
+        xAxis: { type: 'category', data: profiles.map(function(p) { return p.label || ('群体' + p.cluster); }) },
+        yAxis: { type: 'value', name: '平均消费金额' },
+        series: [{ type: 'bar', data: profiles.map(function(p) { return Math.round(p.avg_amount * 100) / 100; }), barWidth: '50%',
+          itemStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: '#14b8a6' }, { offset: 1, color: '#0d9488' }] } }
+        }]
+      });
+    }
+    Dash.resizeAll();
+  }).catch(function() {
+    var el = document.getElementById('loadError');
+    if (el) el.classList.remove('d-none');
+  });
+})();
+</script>
+{% endblock %}

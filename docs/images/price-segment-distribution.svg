@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="420" viewBox="0 0 760 420" role="img" aria-label="价格段商品分布">
+  <rect width="100%" height="100%" fill="#ffffff"/>
+  <text x="28" y="42" font-family="Noto Sans SC, Microsoft YaHei, Arial, sans-serif" font-size="22" font-weight="700" fill="#0f172a">价格段商品分布</text>
+  <text x="28" y="96" font-family="Noto Sans SC, Microsoft YaHei, Arial, sans-serif" font-size="14" fill="#334155">0-50元</text>
+  <rect x="160" y="78" width="468" height="24" rx="6" fill="#e2e8f0"/>
+  <rect x="160" y="78" width="253" height="24" rx="6" fill="#0ea5e9"/>
+  <text x="644" y="96" font-family="Arial, sans-serif" font-size="14" fill="#0f172a">168 件</text>
+  <text x="28" y="136" font-family="Noto Sans SC, Microsoft YaHei, Arial, sans-serif" font-size="14" fill="#334155">50-100元</text>
+  <rect x="160" y="118" width="468" height="24" rx="6" fill="#e2e8f0"/>
+  <rect x="160" y="118" width="460" height="24" rx="6" fill="#10b981"/>
+  <text x="644" y="136" font-family="Arial, sans-serif" font-size="14" fill="#0f172a">305 件</text>
+  <text x="28" y="176" font-family="Noto Sans SC, Microsoft YaHei, Arial, sans-serif" font-size="14" fill="#334155">100-150元</text>
+  <rect x="160" y="158" width="468" height="24" rx="6" fill="#e2e8f0"/>
+  <rect x="160" y="158" width="468" height="24" rx="6" fill="#8b5cf6"/>
+  <text x="644" y="176" font-family="Arial, sans-serif" font-size="14" fill="#0f172a">310 件</text>
+  <text x="28" y="216" font-family="Noto Sans SC, Microsoft YaHei, Arial, sans-serif" font-size="14" fill="#334155">150-200元</text>
+  <rect x="160" y="198" width="468" height="24" rx="6" fill="#e2e8f0"/>
+  <rect x="160" y="198" width="463" height="24" rx="6" fill="#f59e0b"/>
+  <text x="644" y="216" font-family="Arial, sans-serif" font-size="14" fill="#0f172a">307 件</text>
+  <text x="28" y="256" font-family="Noto Sans SC, Microsoft YaHei, Arial, sans-serif" font-size="14" fill="#334155">200-300元</text>
+  <rect x="160" y="238" width="468" height="24" rx="6" fill="#e2e8f0"/>
+  <rect x="160" y="238" width="166" height="24" rx="6" fill="#ec4899"/>
+  <text x="644" y="256" font-family="Arial, sans-serif" font-size="14" fill="#0f172a">110 件</text>
+  <text x="28" y="296" font-family="Noto Sans SC, Microsoft YaHei, Arial, sans-serif" font-size="14" fill="#334155">300元+</text>
+  <rect x="160" y="278" width="468" height="24" rx="6" fill="#e2e8f0"/>
+  <rect x="160" y="278" width="0" height="24" rx="6" fill="#6366f1"/>
+  <text x="644" y="296" font-family="Arial, sans-serif" font-size="14" fill="#0f172a">0 件</text>
+</svg>

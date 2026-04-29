@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}产品功能属性偏好解读{% endblock %}
+{% block content %}
+<h2 class="page-title mb-1">产品功能属性偏好解读</h2>
+<p class="page-subtitle">有机、高钙、A2β-酪蛋白、进口奶源等属性分布与共现关系</p>
+<div id="loadError" class="alert alert-warning d-none" role="alert">
+  数据加载失败：请先确认接口 <code>/api/attribute/preference/</code> 能在浏览器中打开，且数据库已存在属性关系数据。
+</div>
+<div class="row">
+  <div class="col-lg-6 mb-4">
+    <div class="card">
+      <div class="card-header">功能属性商品数分布</div>
+      <div class="card-body">
+        <div id="chartAttrFreq" class="chart-container-lg"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6 mb-4">
+    <div class="card">
+      <div class="card-header">属性占比（南丁格尔玫瑰图）</div>
+      <div class="card-body">
+        <div id="chartAttrPie" class="chart-container-lg"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 mb-4">
+    <div class="card">
+      <div class="card-header">属性共现 Top20（同一商品多属性组合）</div>
+      <div class="card-body">
+        <div id="chartRules" class="chart-container"></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+(function() {
+  var colors = window.CHART_COLORS || [];
+  Dash.fetchJson('/api/attribute/preference/').then(function(res) {
+    var d = res.data || {};
+    var freq = d.attribute_freq || [];
+    var rules = d.association_rules || [];
+
+    if (freq.length) {
+      var ch = Dash.initChart('chartAttrFreq');
+      ch.setOption({
+        color: colors,
+        tooltip: { trigger: 'axis' },
+        grid: { left: '14%', right: '8%', top: '10%', bottom: '14%' },
+        xAxis: { type: 'category', data: freq.map(function(x) { return x.name; }), axisLabel: { rotate: 22 } },
+        yAxis: { type: 'value', name: '商品数', splitLine: { lineStyle: { opacity: 0.3 } } },
+        series: [{ name: '商品数', type: 'bar', data: freq.map(function(x) { return x.value; }), barWidth: '52%',
+          itemStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: '#6366f1' }, { offset: 1, color: '#8b5cf6' }] } }
+        }]
+      });
+    }
+    if (freq.length) {
+      var ch2 = Dash.initChart('chartAttrPie');
+      ch2.setOption({
+        color: colors,
+        tooltip: { trigger: 'item', formatter: '{b}: {c} 件 ({d}%)' },
+        series: [{ type: 'pie', radius: [28, 95], center: ['50%', '50%'], roseType: 'area',
+          data: freq.map(function(x) { return { name: x.name, value: x.value }; }),
+          label: { formatter: '{b}\n{c}' }, labelLine: { length: 14, length2: 10 }
+        }]
+      });
+    }
+    if (rules.length) {
+      var ch3 = Dash.initChart('chartRules');
+      ch3.setOption({
+        color: colors,
+        tooltip: { trigger: 'axis', formatter: function(params) { var i = params[0].dataIndex; var r = rules[i]; return (r.items||[]).join(' + ') + '<br/>共现: ' + r.count + ' 次'; }},
+        grid: { left: '18%', right: '8%', top: '8%', bottom: '20%' },
+        xAxis: { type: 'category', data: rules.map(function(r) { return (r.items||[]).join('+'); }), axisLabel: { rotate: 38, fontSize: 10 } },
+        yAxis: { type: 'value', name: '共现次数' },
+        series: [{ type: 'bar', data: rules.map(function(r) { return r.count; }), barWidth: '55%',
+          itemStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: '#ec4899' }, { offset: 1, color: '#f472b6' }] } }
+        }]
+      });
+    }
+    Dash.resizeAll();
+  }).catch(function() {
+    var el = document.getElementById('loadError');
+    if (el) el.classList.remove('d-none');
+  });
+})();
+</script>
+{% endblock %}

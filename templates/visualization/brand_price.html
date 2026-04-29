@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}品牌与价格段竞争格局分析{% endblock %}
+{% block content %}
+<h2 class="page-title mb-1">品牌与价格段竞争格局分析</h2>
+<p class="page-subtitle">品牌梯队、销量与销售额、主流价格区间</p>
+<div id="loadError" class="alert alert-warning d-none" role="alert">
+  数据加载失败：请先确认接口 <code>/api/market/brand-price/</code> 能在浏览器中打开，且数据库已导入商品数据。
+</div>
+<div class="row">
+  <div class="col-lg-8 mb-4">
+    <div class="card">
+      <div class="card-header">品牌销量排名（Top15）</div>
+      <div class="card-body">
+        <div id="chartBrand" class="chart-container-lg"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4 mb-4">
+    <div class="card">
+      <div class="card-header">价格段分布</div>
+      <div class="card-body">
+        <div id="chartPriceSeg" class="chart-container"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6 mb-4">
+    <div class="card">
+      <div class="card-header">品牌销售额对比（Top12）</div>
+      <div class="card-body">
+        <div id="chartBrandSales" class="chart-container"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6 mb-4">
+    <div class="card">
+      <div class="card-header">各价格段商品数（条形图）</div>
+      <div class="card-body">
+        <div id="chartPriceBar" class="chart-container"></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+(function() {
+  var colors = window.CHART_COLORS || ['#0ea5e9','#10b981'];
+  Dash.fetchJson('/api/market/brand-price/').then(function(res) {
+    var d = res.data || {};
+    var brands = d.brand_ranking || [];
+    var seg = d.price_segments || [];
+
+    if (brands.length) {
+      var ch = Dash.initChart('chartBrand');
+      ch.setOption({
+        color: colors,
+        tooltip: { trigger: 'axis', formatter: function(params) { var i = params[0].dataIndex; var b = brands[i]; return (b.brand||'') + '<br/>销量: ' + Dash.formatCompactNumber(b.volume||0) + '<br/>销售额: ' + Dash.formatRmb(b.sales||0); }},
+        grid: Dash.baseGrid(),
+        xAxis: { type: 'category', data: brands.map(function(x) { return x.brand || '未知'; }), axisLabel: { rotate: 32, fontSize: 11 } },
+        yAxis: { type: 'value', name: '销量', splitLine: Dash.baseSplitLine() },
+        series: [{ name: '销量', type: 'bar', data: brands.map(function(x) { return x.volume || 0; }), barWidth: '55%',
+          itemStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: '#10b981' }, { offset: 1, color: '#059669' }] } }
+        }]
+      });
+    }
+    if (seg.length) {
+      var ch2 = Dash.initChart('chartPriceSeg');
+      ch2.setOption({
+        color: colors,
+        tooltip: { trigger: 'item', formatter: '{b}: {c} 件 ({d}%)' },
+        series: [{ type: 'pie', radius: ['38%', '68%'], roseType: 'area',
+          data: seg.map(function(x) { return { name: x.segment, value: x.count }; }),
+          label: { formatter: '{b}\n{c}' }
+        }]
+      });
+    }
+    if (brands.length) {
+      var topSales = brands.slice(0, 12);
+      var ch3 = Dash.initChart('chartBrandSales');
+      ch3.setOption({
+        color: colors,
+        tooltip: { trigger: 'axis', formatter: function(params) { var i = params[0].dataIndex; var b = topSales[i]; return (b.brand||'') + '<br/>销售额: ' + Dash.formatRmb(b.sales||0); }},
+        grid: Dash.baseGrid(),
+        xAxis: { type: 'category', data: topSales.map(function(x) { return x.brand || ''; }), axisLabel: { rotate: 30 } },
+        yAxis: { type: 'value', name: '销售额' },
+        series: [{ name: '销售额', type: 'bar', data: topSales.map(function(x) { return x.sales || 0; }), barWidth: '50%',
+          itemStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: '#8b5cf6' }, { offset: 1, color: '#6366f1' }] } }
+        }]
+      });
+    }
+    if (seg.length) {
+      var ch4 = Dash.initChart('chartPriceBar');
+      ch4.setOption({
+        color: colors,
+        tooltip: { trigger: 'axis' },
+        grid: Dash.baseGrid(),
+        xAxis: { type: 'value', name: '商品数' },
+        yAxis: { type: 'category', data: seg.map(function(x) { return x.segment; }).reverse() },
+        series: [{ type: 'bar', data: seg.map(function(x) { return x.count; }), barWidth: '60%', itemStyle: { color: '#f59e0b' } }]
+      });
+    }
+    Dash.resizeAll();
+  }).catch(function() {
+    var el = document.getElementById('loadError');
+    if (el) el.classList.remove('d-none');
+  });
+})();
+</script>
+{% endblock %}
